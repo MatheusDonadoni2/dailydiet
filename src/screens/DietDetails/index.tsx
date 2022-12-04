@@ -14,7 +14,7 @@ import {
 
 export type RouteDietDetailsProps = {
   percentualValue: number;
-  recordDietMeals: number;
+  bestRecordDietMeals: number;
   countMeals: number;
   countMealsIncludesInDiet: number;
   countMealsNotIncludesInDiet: number;
@@ -25,7 +25,7 @@ export function DietDetails() {
   const route = useRoute();
   const {
     percentualValue,
-    recordDietMeals,
+    bestRecordDietMeals,
     countMeals,
     countMealsIncludesInDiet,
     countMealsNotIncludesInDiet,
@@ -55,7 +55,7 @@ export function DietDetails() {
 
           <CardStatics
             color={"GRAY"}
-            titleValue={recordDietMeals ? recordDietMeals : 0}
+            titleValue={bestRecordDietMeals ? bestRecordDietMeals : 0}
             subTitle="melhor sequência de pratos dentro da dieta"
             style={{
               marginBottom: 12,

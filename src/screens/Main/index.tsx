@@ -16,6 +16,7 @@ import { PercentualCardMain } from "@components/PercentualCardMain";
 
 import { Container, Content } from "./styles";
 import { number } from "zod";
+import { Loading } from "@components/Loading";
 
 export function Main() {
   const navigation = useNavigation();
@@ -34,6 +35,7 @@ export function Main() {
   function assignInfoDietDetails(data: MealStorageDTO[]) {
     let percentualValue = 0;
     let recordDietMeals = 0;
+    let bestRecordDietMeals = 0;
     let countMeals = 0;
     let countMealsIncludesInDiet = 0;
     let countMealsNotIncludesInDiet = 0;
@@ -44,23 +46,25 @@ export function Main() {
       item.data.forEach((detail) => {
         if (detail.dietIncludes) {
           countMealsIncludesInDiet += 1;
-          if (countMealsNotIncludesInDiet === 0) {
-            recordDietMeals += 1;
-          }
+          recordDietMeals += 1;
         } else {
           countMealsNotIncludesInDiet += 1;
+          recordDietMeals > bestRecordDietMeals
+            ? (bestRecordDietMeals = recordDietMeals)
+            : bestRecordDietMeals;
+          recordDietMeals = 0;
         }
       });
     });
-
+    recordDietMeals > bestRecordDietMeals
+      ? (bestRecordDietMeals = recordDietMeals)
+      : bestRecordDietMeals;
     percentualValue = (countMealsIncludesInDiet * 100) / countMeals;
     percentualValue = parseFloat(percentualValue.toFixed(2));
-
     setPercentualValue(percentualValue);
-
     setDietDetailsProps({
       percentualValue,
-      recordDietMeals,
+      bestRecordDietMeals,
       countMeals,
       countMealsIncludesInDiet,
       countMealsNotIncludesInDiet,
@@ -97,7 +101,7 @@ export function Main() {
         onPress={() =>
           navigation.navigate("dietDetails", {
             percentualValue: dietDetailsProps.percentualValue,
-            recordDietMeals: dietDetailsProps.recordDietMeals,
+            bestRecordDietMeals: dietDetailsProps.bestRecordDietMeals,
             countMeals: dietDetailsProps.countMeals,
             countMealsIncludesInDiet: dietDetailsProps.countMealsIncludesInDiet,
             countMealsNotIncludesInDiet:
@@ -121,40 +125,43 @@ export function Main() {
           title="Nova refeição"
           icon="Plus"
           fill={true}
-          onPress={() => navigation.navigate("newMeal")}
+          onPress={() => navigation.navigate("newMeal", { id: "" })}
         />
-
-        <SectionList
-          style={{
-            marginTop: 36,
-          }}
-          sections={meals}
-          keyExtractor={({ id }) => id}
-          renderItem={({ item }) => (
-            <CardItemDailyDiet
-              meal={item.description}
-              hour={item.hour}
-              dietIncludes={item.dietIncludes}
-              onPress={() => handleMealsDetails(item.id)}
-            />
-          )}
-          renderSectionHeader={({ section: { date } }) => (
-            <Text
-              style={{
-                fontSize: theme.FONT_SIZE.LG,
-                fontFamily: theme.FONT_FAMILY.BOLD,
-                color: theme.COLORS.GRAY_100,
-                marginBottom: 14,
-              }}
-            >
-              {date}
-            </Text>
-          )}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingBottom: 100,
-          }}
-        />
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <SectionList
+            style={{
+              marginTop: 36,
+            }}
+            sections={meals}
+            keyExtractor={({ id }) => id}
+            renderItem={({ item }) => (
+              <CardItemDailyDiet
+                meal={item.description}
+                hour={item.hour}
+                dietIncludes={item.dietIncludes}
+                onPress={() => handleMealsDetails(item.id)}
+              />
+            )}
+            renderSectionHeader={({ section: { date } }) => (
+              <Text
+                style={{
+                  fontSize: theme.FONT_SIZE.LG,
+                  fontFamily: theme.FONT_FAMILY.BOLD,
+                  color: theme.COLORS.GRAY_100,
+                  marginBottom: 14,
+                }}
+              >
+                {date.split("/").join(".")}
+              </Text>
+            )}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingBottom: 100,
+            }}
+          />
+        )}
       </Content>
     </Container>
   );

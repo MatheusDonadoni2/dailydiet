@@ -8,8 +8,8 @@ import { getMeal } from "./getMeal";
 
 export async function mealAddByDate(newMeal: MealStorageDTO) {
   try {
-    //await AsyncStorage.clear();
-    //return;
+    // await AsyncStorage.clear();
+    // return;
     const storedMeals = await getMeal();
     const dateAlreadyExist = await getMealByDate(newMeal.date);
 

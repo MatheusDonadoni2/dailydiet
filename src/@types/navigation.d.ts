@@ -4,12 +4,14 @@ export declare global {
       main: undefined;
       dietDetails: {
         percentualValue: number;
-        recordDietMeals: number;
+        bestRecordDietMeals: number;
         countMeals: number;
         countMealsIncludesInDiet: number;
         countMealsNotIncludesInDiet: number;
       };
-      newMeal: undefined;
+      newMeal: {
+        id?: string | undefined;
+      };
       feedBack: {
         dietsIncludes: boolean;
       };

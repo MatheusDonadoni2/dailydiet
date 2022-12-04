@@ -1,7 +1,6 @@
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styled, { css } from "styled-components/native";
-import { MealsDetails } from ".";
 
 export type MealsDetailsStyles = {
   includeDiet: boolean;
